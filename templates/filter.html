@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <title>BookWise</title>
+    <style>
+        .title,
+        .settings {
+            margin: 4px;
+        }
+
+        .title,
+        .clear-settings {
+            background-color: rgb(255, 255, 255);
+            border: 1px solid black;
+            padding: 4px;
+            border-radius: 7%;
+        }
+
+        .options {
+            display: none;
+            padding-left: 20px;
+        }
+
+        .option {
+            cursor: pointer;
+            padding: 5px;
+            width: 40px;
+            display: flex;
+            border: 1px solid transparent;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .option.selected {
+            background-color: rgb(150, 255, 215);
+            color: white;
+            border-radius: 15%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="filter-wrap">
+        <div class="filter-content">
+            <div class="filter-title">
+                <p>Filters</p>
+            </div>
+            <div class="filter">
+                <button class="title" onclick="show(0)">Filter 1</button>
+                <div class="options">
+                    <p class="option" onclick="selectOption(this)">option1</p>
+                    <p class="option" onclick="selectOption(this)">option2</p>
+                    <p class="option" onclick="selectOption(this)">option3</p>
+                    <p class="option" onclick="selectOption(this)">option4</p>
+                </div>
+            </div>
+            <div class="filter">
+                <button class="title" onclick="show(1)">Filter 2</button>
+                <div class="options">
+                    <p class="option" onclick="selectOption(this)">option1</p>
+                    <p class="option" onclick="selectOption(this)">option2</p>
+                    <p class="option" onclick="selectOption(this)">option3</p>
+                    <p class="option" onclick="selectOption(this)">option4</p>
+                </div>
+            </div>
+            <div class="filter">
+                <button class="title" onclick="show(2)">Filter 3</button>
+                <div class="options">
+                    <p class="option" onclick="selectOption(this)">option1</p>
+                    <p class="option" onclick="selectOption(this)">option2</p>
+                    <p class="option" onclick="selectOption(this)">option3</p>
+                    <p class="option" onclick="selectOption(this)">option4</p>
+                </div>
+            </div>
+            <div class="filter">
+                <button class="title" onclick="show(3)">Filter 4</button>
+                <div class="options">
+                    <p class="option" onclick="selectOption(this)">option1</p>
+                    <p class="option" onclick="selectOption(this)">option2</p>
+                    <p class="option" onclick="selectOption(this)">option3</p>
+                    <p class="option" onclick="selectOption(this)">option4</p>
+                </div>
+            </div>
+            <div class="settings">
+                <div class="clear-search">
+                    <button class="clear-settings" onclick="clearAll()">Clear</button>
+                    <p class="search">Search</p>
+                </div>
+                <p class="settings-text">Settings</p>
+            </div>
+        </div>
+    </div>
+    <button onclick="toggleFilters()">close</button>
+    <style>
+        .filter-wrap{
+            display: block;
+        }
+    </style>
+    <script>
+
+        //show filters
+        function show(index) {
+            var options = document.querySelectorAll('.filter')[index].querySelector('.options');
+            if (options.style.display === "none" || options.style.display === "") {
+                options.style.display = "block";
+            } else {
+                options.style.display = "none";
+            }
+        }
+
+        //save selected options and add selected class
+        function selectOption(option) {
+            // Remove 'selected' class from all options in the same group
+            var options = option.parentElement.querySelectorAll('.option');
+            options.forEach(function (opt) {
+                opt.classList.remove('selected');
+            });
+            // Add 'selected' class to the clicked option
+            option.classList.add('selected');
+        }
+
+        //clear all filters
+        function clearAll() {
+            var options = document.querySelectorAll('.option');
+            options.forEach(function (option) {
+                option.classList.remove('selected');
+            });
+        }
+
+        // Close or open filters
+        function toggleFilters() {
+            var filterWrap = document.querySelector(".filter-wrap");
+            if (filterWrap.style.display === "none" || filterWrap.style.display === "") {
+                filterWrap.style.display = "block";
+            } else {
+                filterWrap.style.display = "none";
+            }
+        }
+        toggleFilters()
+    </script>
+
+</body>
+
+</html>

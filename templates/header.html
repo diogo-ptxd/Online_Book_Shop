@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>BookWise</title>
+</head>
+
+<body>
+    <div class="header_wrap">
+        <div class="header_top">
+            <div class="item_top item">
+                <a href="#">BookWise</a>
+            </div>
+            <div class="item_top item">
+                <a href="">placeholder address</a>
+            </div>
+            <div class="item_top item">placeholder search</div>
+            <div class="item_top"><a href="#"><img src="../assets/images/ukflag.png" alt="uk flag"
+                        style="max-width: 40px;"></a></div>
+            <div class="item_top"><a href="#"><img src="../assets/images/profile.png" alt="profile icon"
+                        style="max-width: 40px"></a></div>
+            <div class="item_top"><a href="#"><img src="../assets/images/cart.png" alt="" style="max-width: 40px;"></a>
+            </div>
+        </div>
+        <div class="header_bottom">
+            <div class="item_bottom item">
+                <button onclick="toggleFilters()" id="filterButton">
+                    <i class="material-icons">menu</i>
+                    <p>Filters</p>
+                </button>
+            </div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+            <div class="item_bottom item"><a href="#">placeholder_text</a></div>
+
+        </div>
+    </div>
+    <div class="maincontent">
+        <div class="filter-wrap">
+            <div class="filter-content">
+                <div class="filter-title">
+                    <p>Filters</p>
+                </div>
+                <div class="filter">
+                    <button class="title" onclick="show(0)">Filter 1</button>
+                    <div class="options">
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                    </div>
+                </div>
+                <div class="filter">
+                    <button class="title" onclick="show(1)">Filter 2</button>
+                    <div class="options">
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                    </div>
+                </div>
+                <div class="filter">
+                    <button class="title" onclick="show(2)">Filter 3</button>
+                    <div class="options">
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                    </div>
+                </div>
+                <div class="filter">
+                    <button class="title" onclick="show(3)">Filter 4</button>
+                    <div class="options">
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                        <p class="option" onclick="selectOption(event)">option</p>
+                    </div>
+                </div>
+                <div class="settings">
+                    <div class="clear-search">
+                        <button class="clear-settings" onclick="clearAll()">Clear</button>
+                        <p class="search">Search</p>
+                    </div>
+                    <p class="settings-text">Settings</p>
+                </div>
+            </div>
+        </div>
+        <div class="book-container">
+            <div class="book"><p>Book 1</p> <button class="buyBook-btn" onclick="redirectToStripe()">Buy</button></div>
+            <div class="book"><p>Book 1</p></div>
+            <div class="book"><p>Book 1</p></div>
+            <div class="book"><p>Book 1</p></div>
+            <div class="book"><p>Book 1</p></div>
+            <!-- Add more books as needed -->
+        </div>
+
+    </div>
+    <script>
+
+        //show filters
+        function show(index) {
+            var options = document.querySelectorAll('.filter')[index].querySelector('.options');
+            var titles = document.querySelectorAll('.filter .title');
+
+            if (options.style.display === "none" || options.style.display === "") {
+                options.style.display = "block";
+                titles[index].classList.add('active');
+            } else {
+                options.style.display = "none";
+                titles[index].classList.remove('active');
+            }
+        }
+
+        //save selected options and add selected class
+        function selectOption(event) {
+            var option = event.target; // Get the clicked element
+            var isSelected = option.classList.contains('selected'); // Check if the option is already selected
+            var options = option.parentElement.querySelectorAll('.option'); // Get all options in the same group
+
+            // Remove 'selected' class from all options in the same group
+            options.forEach(function (opt) {
+                opt.classList.remove('selected');
+            });
+
+            // Add 'selected' class to the clicked option if it wasn't already selected
+            if (!isSelected) {
+                option.classList.add('selected');
+            }
+        }
+
+
+
+        //clear all filters
+        function clearAll() {
+            var options = document.querySelectorAll('.option');
+            options.forEach(function (option) {
+                option.classList.remove('selected');
+            });
+        }
+
+        // Close or open filters
+        function toggleFilters() {
+            var filterWrap = document.querySelector(".filter-wrap");
+            var filterButton = document.getElementById("filterButton");
+            var icon = filterButton.querySelector("i");
+
+            if (filterWrap.style.maxHeight === "0px" || filterWrap.style.maxHeight === "") {
+                filterWrap.style.display = "block"; // Show the filters
+                filterWrap.style.maxHeight = "100vh"; // Set max-height to 100vh to occupy full viewport height
+                icon.textContent = "close"; // Change to "X" when filters are open
+            } else {
+                filterWrap.style.maxHeight = "0"; // Set max-height to 0 to hide the filters
+                icon.textContent = "menu"; // Change to "menu" when filters are closed
+            }
+        }
+        toggleFilters()
+
+        function rotateTitleArrow(active) {
+
+            //tilt arrow downwards when filter is active then back up when not active
+            var arrow = document.querySelectorAll('.title::after');
+            arrow.forEach(function (arrow) {
+                if (active) {
+                    arrow.style.transform = "rotate(0deg)";
+                } else {
+                    arrow.style.transform = "rotate(180deg)";
+                }
+            });
+        }
+
+        function redirectToStripe(){
+            location.href=("https://buy.stripe.com/test_4gw15p2ZM0XDezu7ss");
+        }
+
+    </script>
+    <!-- Implement Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+</body>
+
+</html>

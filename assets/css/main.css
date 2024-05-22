@@ -1,0 +1,239 @@
+/*-----------------------------------------      start    -----------------------------------------*/
+
+
+
+/*-----------------------------------------      end    -----------------------------------------*/
+
+
+/*-----------------------------------------     Styling general page formats start    -----------------------------------------*/
+
+* {
+    font-style: helvetica;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    color: black;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+/*-----------------------------------------     Styling general page formats end    -----------------------------------------*/
+
+
+
+/*-----------------------------------------      header.html start    -----------------------------------------*/
+
+.header_top,
+.header_bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    max-height: fit-content;
+    overflow: hidden;
+}
+
+.header_top {
+    border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+    height: 60px;
+}
+
+.item_top {
+    width: 12%;
+    margin: 20px 0 20px 0;
+}
+
+.item_top:nth-child(3) {
+    width: 40%;
+}
+
+.header_bottom {
+    height: 40px;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+}
+
+.item_bottom {
+    width: 12.5%;
+    margin: 5px 0 5px 0;
+
+}
+
+.item a {
+    padding: 9px;
+}
+
+.item a:hover {
+
+    border: 1px solid rgb(41, 41, 41);
+    border-radius: 3%;
+}
+
+.item_bottom {
+    justify-content: center;
+    align-items: center;
+}
+
+.item_bottom button {
+    background-color: rgb(255, 255, 255);
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+button p {
+    padding-left: 7px;
+}
+
+/*-----------------------------------------      header.html end    -----------------------------------------*/
+
+
+/*-----------------------------------------      filter.html start    -----------------------------------------*/
+
+.filter-wrap {
+    width: 200px;
+    overflow-x: hidden;
+    background-color: rgb(255, 255, 255);
+    border-right: 1px solid rgba(153, 153, 153, 0.2);
+    border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+    border-radius: 0 0 3px 0;
+    display: none;
+    /* Initially hidden */
+    transition: max-height 0.5s ease;
+    /* Add transition */
+    max-height: 0;
+    /* Start with max-height 0 */
+    height: 100vh;
+    /* Set height to 100vh */
+}
+
+.filter-content {
+    width: 200px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-wrap::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar in WebKit browsers */
+}
+
+
+.filter,
+.settings {
+    border-top: 1px solid rgba(153, 153, 153, 0.2);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+}
+
+.filter-title {
+    margin-bottom: 20px;
+    margin-left: 30px;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.title::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    /* adjust the size of the arrow */
+    border-bottom: 5px solid transparent;
+    /* adjust the size of the arrow */
+    border-right: 5px solid #5194F4;
+    /* adjust the color and size of the arrow */
+    margin-right: 10px;
+    /* adjust the spacing between the arrow and the text */
+    transform: rotate(180deg);
+    margin-left: 10px;
+    transition: .3s;
+}
+
+.title.active::after {
+    transform: rotate(270deg);
+}
+
+
+.options {
+    display: none;
+}
+
+.clear-search {
+    display: flex;
+    margin: 10px 10px 10px 0;
+}
+
+.clear-settings {
+    margin-right: 20px;
+}
+
+.options {
+    text-align: center;
+    max-width: fit-content;
+}
+
+.option {
+    margin-left: 40px;
+    padding: 0 5px 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.option.selected {
+    background-color: #5194F4;
+    text-align: center;
+    color: white;
+    width: fit-content;
+}
+
+button {
+    background-color: white;
+    border: none;
+}
+
+.material-icons {
+    color: #5194F4;
+}
+
+/*-----------------------------------------      filter.html end    -----------------------------------------*/
+
+
+/*-----------------------------------------      maincontent start    -----------------------------------------*/
+
+.maincontent{
+    display: flex;
+    width: 100%;
+}
+
+.book-container {
+    display: grid; /* setting the display to display multiple book in the same row */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust the minimum width of each column as needed */
+    gap: 20px; /* Adjust the gap between books */
+    max-width: 90%; /* Adjust this to your desired maximum width */
+    margin: 0 auto; /* Center the container horizontally */
+    height: fit-content;
+}
+
+.book {
+    background-color: #f0f0f0; /* Just for visualization */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding: 10px;
+    max-height: 200px; /* Adjust as needed */
+    overflow: hidden; /* Hide any content that overflows the maximum height */
+}
+
+
+/*-----------------------------------------      maincontent end    -----------------------------------------*/
+
