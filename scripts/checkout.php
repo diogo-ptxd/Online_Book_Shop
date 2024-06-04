@@ -1,7 +1,7 @@
 <?php
 
 //requires
-require __DIR__ . "../../vendor/autoload.php";
+require_once __DIR__ . "../../vendor/autoload.php";
 $config = parse_ini_file(__DIR__ . "/config.ini", true);
 
 $mysqli = new mysqli(
@@ -12,9 +12,7 @@ $mysqli = new mysqli(
 );
 
 
-$stripe_secret_key = "sk_test_51P1QwWRq4uEDYFFly6Mo8HiENPgnfE06VtrBfIqcszpBVkopKaRZOfiYBicrSZpYqXer9YIXKdZl8zA3yuvk7qXC00v2Q0sfy6";
-
-\Stripe\Stripe::setApiKey($stripe_secret_key); // setting the API key
+\Stripe\Stripe::setApiKey($config["stripe"]["stripe_secret_key"]); // setting the API key
 
 $checkout_session = \Stripe\Checkout\Session::create([
     "mode" => "payment",
@@ -25,7 +23,7 @@ $checkout_session = \Stripe\Checkout\Session::create([
             "quantity" => 1,
             "price_data" => [
                 "currency" => "eur",
-                "unit_amount" => 2000, // cents, meaning 20 eur
+                "unit_amount" => 2000, // cents
                 "product_data" => [
                     "name" => "T-shirt",
                     "description" => "shirt",
@@ -37,7 +35,7 @@ $checkout_session = \Stripe\Checkout\Session::create([
             "quantity" => 2,
             "price_data" => [
                 "currency" => "eur",
-                "unit_amount" => 700, // cents, meaning 20 eur
+                "unit_amount" => 700, // cents
                 "product_data" => [
                     "name" => "Wine"
                 ]
@@ -49,5 +47,3 @@ $checkout_session = \Stripe\Checkout\Session::create([
 
 http_response_code(303);
 header("Location: " . $checkout_session->url);
-
-?>
