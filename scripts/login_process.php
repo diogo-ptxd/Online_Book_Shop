@@ -122,7 +122,7 @@ html {
                                     progressBar.style.width = width + '%';
                                     if (width <= 0) {
                                         clearInterval(interval);
-                                        window.location.href = '../pages/profile.php';
+                                        window.location.href = '../index.html';
                                     }
                                 }, 30); // Adjust the speed of the progress bar here
                 <?php else: ?>
