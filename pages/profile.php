@@ -1,6 +1,6 @@
 <?php
 
-require '../scripts/session_handler.php';
+include ('../scripts/session_handler.php'); // Include the session handler
 
 // Database connection parameters
 $host = 'localhost';
@@ -8,18 +8,17 @@ $db = 'bookwise';
 $user = 'user_read';
 $pass = 'password';
 
-
 // Connect to the database
 $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-  // Redirect to login page if not logged in
-  header("Location: ../pages/login.html");
-  exit;
+    // Redirect to login page if not logged in
+    header("Location: ../pages/login.html");
+    exit;
 }
 
 // Fetch user data from the database
@@ -31,22 +30,37 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-  // User data found, fetch and display
-  $row = $result->fetch_assoc();
-  $id = $row['user_id'];
-  $username = $row['fullname']; // Change 'username' to 'fullname'
-  $job = ''; // Update the job field, if necessary
-  $email = $row['email'];
-  $phoneNumber = $row['phone']; // Change 'phone_number' to 'phone'
-  $mobilePhoneNumber = $row['mobile']; // Change 'mobile_phone_number' to 'mobile'
-  $location = $row['address']; // Change 'location' to 'address'
+    // User data found, fetch and display
+    $row = $result->fetch_assoc();
+    $username = htmlspecialchars($row['fullname']); // Sanitize output
+    $email = htmlspecialchars($row['email']);
+    $phoneNumber = htmlspecialchars($row['phone']);
+    $mobilePhoneNumber = htmlspecialchars($row['mobile']);
+    $location = htmlspecialchars($row['address']);
+    $profile_picture = htmlspecialchars($row['profile_picture']);
+
+    // Fetch job field if available
+    if (isset($row['job'])) {
+        $job = htmlspecialchars($row['job']);
+    } else {
+        $job = ''; // Default value if job is not set
+    }
 } else {
-  // User data not found
-  echo "User data not found.";
+    // User data not found
+    echo "User data not found.";
+    exit;
 }
 
 $stmt->close();
 $conn->close();
+
+// Determine profile image path
+if (!empty($profile_picture)) {
+    $profile_image_path = '../uploads/profile_pictures/' . $profile_picture;
+} else {
+    // Default image if profile picture is not set
+    $profile_image_path = 'https://bootdey.com/img/Content/avatar/avatar7.png';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,10 +68,10 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/profile.css">
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css'>
-    <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
 
+    <link rel="stylesheet" href="../assets/css/profile.css">
+    <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
     <script src='https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js'></script>
     <title>BookWise - Profile</title>
 </head>
@@ -69,8 +83,7 @@ $conn->close();
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="main-breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>
+                    <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">User Profile</li>
                 </ol>
             </nav>
@@ -81,9 +94,10 @@ $conn->close();
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-column align-items-center text-center">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                                <img src="<?php echo htmlspecialchars($profile_image_path); ?>" alt="Profile Picture" class="rounded-circle" width="150">
                                 <div class="mt-3">
                                     <h4><?php echo $username; ?></h4>
+                                    <!-- Display other user information -->
                                     <p class="text-secondary mb-1"><?php echo $job; ?></p>
                                     <p class="text-muted font-size-sm"><?php echo $location; ?></p>
                                     <button class="btn btn-primary">Follow</button>
@@ -93,21 +107,16 @@ $conn->close();
                         </div>
                     </div>
 
-
                     <div class="card mt-3">
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                </svg>Github</h6>
-            <span class="text-secondary"><a href="https://github.com/diogo-ptxd" target="_blank">https://github.com/diogo-ptxd</a></span>
-        </li>
-    </ul>
-</div>
-
-
-
-
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline">
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                    </svg>Github</h6>
+                                <span class="text-secondary"><a href="https://github.com/diogo-ptxd" target="_blank">https://github.com/diogo-ptxd</a></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <div class="card mb-3">
@@ -117,7 +126,7 @@ $conn->close();
                                     <h6 class="mb-0">Full Name</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <?php echo $username ?>
+                                    <?php echo $username; ?>
                                 </div>
                             </div>
                             <hr>
@@ -126,7 +135,7 @@ $conn->close();
                                     <h6 class="mb-0">Email</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <?php echo $email ?>
+                                    <?php echo $email; ?>
                                 </div>
                             </div>
                             <hr>
@@ -135,7 +144,7 @@ $conn->close();
                                     <h6 class="mb-0">Phone</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <?php echo $phoneNumber ?>
+                                    <?php echo $phoneNumber; ?>
                                 </div>
                             </div>
                             <hr>
@@ -144,7 +153,7 @@ $conn->close();
                                     <h6 class="mb-0">Mobile</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <?php echo $mobilePhoneNumber ?>
+                                    <?php echo $mobilePhoneNumber; ?>
                                 </div>
                             </div>
                             <hr>
@@ -153,7 +162,7 @@ $conn->close();
                                     <h6 class="mb-0">Address</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <?php echo $location ?>
+                                    <?php echo $location; ?>
                                 </div>
                             </div>
                             <hr>
@@ -165,19 +174,20 @@ $conn->close();
                         </div>
                     </div>
                     <div class="row gutters-sm">
-                    <div class="col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                                <!-- Placeholder content -->
+                        <div class="col-sm-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                                    <!-- Placeholder content -->
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                                <!-- Placeholder content -->
+                        <div class="col-sm-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                                    <!-- Placeholder content -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -186,4 +196,6 @@ $conn->close();
         </div>
 
     </div>
-</div>
+</body>
+
+</html>

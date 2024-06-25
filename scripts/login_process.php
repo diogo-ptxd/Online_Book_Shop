@@ -50,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $messageType = "error";
     }
 
+
     $stmt->close();
 }
 
@@ -116,26 +117,26 @@ html {
                 notification.style.display = 'block';
 
                 <?php if ($registrationSuccess): ?>
-                                let width = 100;
-                                const interval = setInterval(function() {
-                                    width -= 1;
-                                    progressBar.style.width = width + '%';
-                                    if (width <= 0) {
-                                        clearInterval(interval);
-                                        window.location.href = '../index.html';
-                                    }
-                                }, 30); // Adjust the speed of the progress bar here
+                                    let width = 100;
+                                    const interval = setInterval(function() {
+                                        width -= 1;
+                                        progressBar.style.width = width + '%';
+                                        if (width <= 0) {
+                                            clearInterval(interval);
+                                            window.location.href = '../index.html';
+                                        }
+                                    }, 30); // Adjust the speed of the progress bar here
                 <?php else: ?>
-                                let width = 100;
-                                const interval = setInterval(function() {
-                                    width -= 1;
-                                    progressBar.style.width = width + '%';
-                                    if (width <= 0) {
-                                        clearInterval(interval);
-                                        notification.style.display = 'none';
-                                        window.location.href = "../pages/login.html";
-                                    }
-                                }, 30); // Adjust the speed of the progress bar here
+                                    let width = 100;
+                                    const interval = setInterval(function() {
+                                        width -= 1;
+                                        progressBar.style.width = width + '%';
+                                        if (width <= 0) {
+                                            clearInterval(interval);
+                                            notification.style.display = 'none';
+                                            window.location.href = "../pages/login.html";
+                                        }
+                                    }, 30); // Adjust the speed of the progress bar here
                 <?php endif; ?>
             }
         });

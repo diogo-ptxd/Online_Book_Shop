@@ -1,8 +1,8 @@
 <?php
 
 // Requires
-require_once __DIR__ . '/../vendor/autoload.php'; // Corrected path to autoload.php
-$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected path to config.ini
+require_once __DIR__ . '/../vendor/autoload.php';
+$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true);
 
 // Database connection parameters from the correct section
 $host = $config["database_book_write"]["hostname"];

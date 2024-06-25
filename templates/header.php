@@ -1,3 +1,9 @@
+<?php
+include_once "../scripts/session_handler.php";
+$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected path to config.ini
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +15,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>BookWise</title>
     <style>
-        /* Add your custom styles here */
         .cart-popup {
             position: absolute;
             top: 50px; /* Adjust as needed to position below cart icon */
@@ -62,24 +67,54 @@
             <div class="item_top item">
                 <a href="#">BookWise</a>
             </div>
-            <!-- Links -->
+            <!-- Address -->
             <div class="item_top item">
-                <a href="">placeholder address</a>
+                <a href="#">
+                    <?php
+                    // Database connection parameters
+                    $host = 'localhost';
+                    $db = 'bookwise';
+                    $user = 'user_write';
+                    $pass = 'password';
+
+                    // Connect to the database
+                    $conn = new mysqli($host, $user, $pass, $db);
+                    if ($conn->connect_error) {
+                        die("Connection failed: " . $conn->connect_error);
+                    }
+
+                    // Fetch user address
+                    $user_id = $_SESSION['user_id']; // Use user ID from the session
+                    $sql = "SELECT address FROM users WHERE user_id=?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param('i', $user_id);
+                    $stmt->execute();
+                    $stmt->bind_result($address);
+                    $stmt->fetch();
+                    $stmt->close();
+                    $conn->close();
+
+                    // Truncate address if longer than 20 characters
+                    if (strlen($address) > 20) {
+                        $address = substr($address, 0, 20) . '...';
+                    }
+                    echo htmlspecialchars($address);
+                    ?>
+                </a>
             </div>
             <!-- Search Placeholder -->
             <div class="item_top item">placeholder search</div>
             <!-- Language Selector -->
             <div class="item_top"><a href="#"><img src="../assets/images/ukflag.png" alt="uk flag" style="max-width: 40px;"></a></div>
             <!-- Profile -->
-            <div class="item_top"><a href="#"><img src="../assets/images/profile.png" alt="profile icon" style="max-width: 40px"></a></div>
+            <div class="item_top"><a href="../pages/profile.php"><img src="../assets/images/profile.png" alt="profile icon" style="max-width: 40px"></a></div>
             <!-- Cart -->
             <div class="item_top">
-    <a href="javascript:void(0);" onclick="toggleCart()">
-        <img src="../assets/images/cart.png" alt="cart icon" style="max-width: 40px;">
-        <span id="cartItemCount" class="cart-item-count">0</span>
-        </a>
-</div>
-
+                <a href="javascript:void(0);" onclick="toggleCart()">
+                    <img src="../assets/images/cart.png" alt="cart icon" style="max-width: 40px;">
+                    <span id="cartItemCount" class="cart-item-count">0</span>
+                </a>
+            </div>
             <!-- Register Book Button -->
             <div class="item_top item">
                 <a href="../pages/register_book.php" class="btn btn-primary">Register Book</a>

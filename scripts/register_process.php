@@ -42,11 +42,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Generate a unique identifier for the profile picture
             $profile_picture = uniqid('', true);
+            $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+
+            // Concatenate the profile picture name with its extension
+            $profile_picture_with_extension = $profile_picture . '.' . $file_extension;
 
             // Move the uploaded file to the desired location
             $upload_directory = '../uploads/profile_pictures/';
-            $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
-            $file_path = $upload_directory . $profile_picture . '.' . $file_extension;
+            $file_path = $upload_directory . $profile_picture_with_extension;
 
             if (!move_uploaded_file($file_tmp, $file_path)) {
                 $message = "Failed to upload profile picture.";
@@ -60,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!$message) {
             // Prepare and execute SQL query to insert user data
             $stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, mobile, address, password, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $fullname, $email, $phone, $mobile, $address, $password, $profile_picture);
+            $stmt->bind_param("sssssss", $fullname, $email, $phone, $mobile, $address, $password, $profile_picture_with_extension);
 
             if ($stmt->execute()) {
                 $message = "Registration successful!";
@@ -113,14 +116,12 @@ $conn->close();
             background-color: #fff;
         }
         body {
-  background-color: #a1c4fd;
-  min-height: 100%;
-}
-html {
-
-  min-height: 100%;
-}
-
+            background-color: #a1c4fd;
+            min-height: 100%;
+        }
+        html {
+            min-height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -139,26 +140,26 @@ html {
                 notification.style.display = 'block';
 
                 <?php if ($registrationSuccess): ?>
-                                let width = 100;
-                                const interval = setInterval(function() {
-                                    width -= 1;
-                                    progressBar.style.width = width + '%';
-                                    if (width <= 0) {
-                                        clearInterval(interval);
-                                        window.location.href = '../pages/login.html';
-                                    }
-                                }, 30); // Adjust the speed of the progress bar here
+                    let width = 100;
+                    const interval = setInterval(function() {
+                        width -= 1;
+                        progressBar.style.width = width + '%';
+                        if (width <= 0) {
+                            clearInterval(interval);
+                            window.location.href = '../pages/login.html';
+                        }
+                    }, 30); // Adjust the speed of the progress bar here
                 <?php else: ?>
-                                let width = 100;
-                                const interval = setInterval(function() {
-                                    width -= 1;
-                                    progressBar.style.width = width + '%';
-                                    if (width <= 0) {
-                                        clearInterval(interval);
-                                        notification.style.display = 'none';
-                                        window.location.href= "../pages/register.html"
-                                    }
-                                }, 30); // Adjust the speed of the progress bar here
+                    let width = 100;
+                    const interval = setInterval(function() {
+                        width -= 1;
+                        progressBar.style.width = width + '%';
+                        if (width <= 0) {
+                            clearInterval(interval);
+                            notification.style.display = 'none';
+                            window.location.href = '../pages/register.html';
+                        }
+                    }, 30); // Adjust the speed of the progress bar here
                 <?php endif; ?>
             }
         });

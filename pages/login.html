@@ -1,81 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../assets/css/entrypages.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="../assets/images/bookwise_logo.png"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookWise - Login</title>
-  </head>
-  <body>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/entrypages.css">
+    <!-- Google Platform Library -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Custom Styles -->
+    <style>
+        /* Add your custom styles here */
+        body {
+            background-color: #a1c4fd;
+            min-height: 100%;
+        }
+        html {
+            min-height: 100%;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            padding: 15px;
+            border-radius: 5px;
+            color: #fff;
+            display: none;
+        }
+        .notification.success {
+            background-color: #28a745;
+        }
+        .notification.error {
+            background-color: #dc3545;
+        }
+        .notification .progress {
+            margin-top: 10px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .notification .progress-bar {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
     <section class="h-100 h-custom gradient-custom-2">
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-12">
-            <div
-              class="card card-registration card-registration-2"
-              style="border-radius: 15px"
-            >
-              <div class="card-body p-0">
-                <div class="p-5">
-                  <h3 class="fw-normal mb-5" style="color: #4835d4">Login</h3>
-                  <form action="../scripts/login_process.php" method="POST">
-                    <!-- Email -->
-                    <div class="mb-4 pb-2">
-                      <div class="form-outline">
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          class="form-control form-control-lg"
-                          required
-                        />
-                        <label class="form-label" for="email">Email</label>
-                      </div>
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card card-registration card-registration-2" style="border-radius: 15px">
+                        <div class="card-body p-0">
+                            <div class="p-5">
+                                <h3 class="fw-normal mb-5" style="color: #4835d4">Login</h3>
+                                <form action="../scripts/login_process.php" method="POST">
+                                    <!-- Email -->
+                                    <div class="mb-4 pb-2">
+                                        <div class="form-outline">
+                                            <input type="email" id="email" name="email" class="form-control form-control-lg" required />
+                                            <label class="form-label" for="email">Email</label>
+                                        </div>
+                                    </div>
+                                    <!-- Password -->
+                                    <div class="mb-4 pb-2">
+                                        <div class="form-outline">
+                                            <input type="password" id="password" name="password" class="form-control form-control-lg" required />
+                                            <label class="form-label" for="password">Password</label>
+                                        </div>
+                                    </div>
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                    <!-- Google Sign-In button -->
+                                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Password -->
-                    <div class="mb-4 pb-2">
-                      <div class="form-outline">
-                        <input
-                          type="password"
-                          id="password"
-                          name="password"
-                          class="form-control form-control-lg"
-                          required
-                        />
-                        <label class="form-label" for="password"
-                          >Password</label
-                        >
-                      </div>
-                    </div>
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary btn-lg">
-                      Login
-                    </button>
-                  </form>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
-  </body>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- JavaScript for handling Google Sign-In -->
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+
+            // Send ID token to your server for verification and session management
+            var id_token = googleUser.getAuthResponse().id_token;
+
+            // Example AJAX request to your server
+            fetch('../scripts/google/login_handler.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_token: id_token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect or show success message
+                    document.getElementById('notification').innerHTML = 'Login successful!';
+                    document.getElementById('notification').classList.add('success');
+                    setTimeout(function() {
+                        window.location.href = '../index.html'; // Redirect after successful login
+                    }, 1000); // Adjust timing as needed
+                } else {
+                    // Show error message
+                    document.getElementById('notification').innerHTML = 'Login failed.';
+                    document.getElementById('notification').classList.add('error');
+                }
+                document.getElementById('notification').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show error message
+                document.getElementById('notification').innerHTML = 'An error occurred. Please try again.';
+                document.getElementById('notification').classList.add('error');
+                document.getElementById('notification').style.display = 'block';
+            });
+        }
+    </script>
+</body>
 </html>
-<style>
-  body {
-    height: 100%;
-  }
-  html{
-    height: 100%;
-  }
-</style>

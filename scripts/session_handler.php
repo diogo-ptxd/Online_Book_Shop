@@ -17,6 +17,9 @@ function is_session_valid() {
 }
 
 if (!is_session_valid()) {
-    header("Location: login.html");
+    header('Location: ../pages/login.html');
     exit();
 }
+
+// Rest of your code goes here
+?>
