@@ -1,7 +1,13 @@
 <?php
-include_once "../scripts/session_handler.php";
-$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected path to config.ini
 
+session_start();
+// include_once "../scripts/session_handler.php";
+// $config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true);
+
+if (!isset($_SESSION['token']) || !isset($_SESSION['token_expiry']) || !isset($_SESSION['user_id'])) {
+    header("Location: pages\login.html");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -9,8 +15,8 @@ $config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
-    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="icon" type="image/x-icon" href="http://127.0.0.1/Online_Book_Shop-master/assets/images/bookwise_logo.png">
+    <link rel="stylesheet" href="http://127.0.0.1/Online_Book_Shop-master/assets/css/main.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>BookWise</title>
@@ -26,6 +32,7 @@ $config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected
             z-index: 1000;
             display: none; /* Initially hidden */
         }
+
         
         .cart-content {
             padding: 20px;
@@ -105,13 +112,13 @@ $config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true); // Corrected
             <!-- Search Placeholder -->
             <div class="item_top item">placeholder search</div>
             <!-- Language Selector -->
-            <div class="item_top"><a href="#"><img src="../assets/images/ukflag.png" alt="uk flag" style="max-width: 40px;"></a></div>
+            <div class="item_top"><a href="#"><img src="http://127.0.0.1/Online_Book_Shop-master/assets/images/ukflag.png" alt="uk flag" style="max-width: 40px;"></a></div>
             <!-- Profile -->
-            <div class="item_top"><a href="../pages/profile.php"><img src="../assets/images/profile.png" alt="profile icon" style="max-width: 40px"></a></div>
+            <div class="item_top"><a href="http://127.0.0.1/Online_Book_Shop-master/pages/profile.php"><img src="http://127.0.0.1/Online_Book_Shop-master/assets/images/profile.png" alt="profile icon" style="max-width: 40px"></a></div>
             <!-- Cart -->
             <div class="item_top">
                 <a href="javascript:void(0);" onclick="toggleCart()">
-                    <img src="../assets/images/cart.png" alt="cart icon" style="max-width: 40px;">
+                    <img src="http://127.0.0.1/Online_Book_Shop-master/assets/images/cart.png" alt="cart icon" style="max-width: 40px;">
                     <span id="cartItemCount" class="cart-item-count">0</span>
                 </a>
             </div>
@@ -429,7 +436,6 @@ function redirectToCheckout() {
     }
     window.top.location.href = `http://localhost/Online_Book_Shop-master/scripts/create_checkout_session.php?${params.toString()}`;
 }
-
 
 </script>
 <style>

@@ -32,10 +32,13 @@
   </head>
 
   <body>
-    <iframe
+    <!-- <iframe
       id="header-frame"
       src="./templates/header.php"
       title="header"
-    ></iframe>
+    ></iframe> -->
+
+    <?php
+    include "./templates/header.php";?>
   </body>
 </html>

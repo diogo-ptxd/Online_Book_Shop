@@ -2,6 +2,7 @@
 
 include ('../scripts/session_handler.php'); // Include the session handler
 
+
 // Database connection parameters
 $host = 'localhost';
 $db = 'bookwise';

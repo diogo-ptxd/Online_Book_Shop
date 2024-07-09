@@ -21,5 +21,6 @@ if (!is_session_valid()) {
     exit();
 }
 
-// Rest of your code goes here
-?>
+
+
+

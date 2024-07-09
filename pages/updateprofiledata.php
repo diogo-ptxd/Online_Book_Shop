@@ -6,11 +6,14 @@ if (!is_session_valid()) {
     exit();
 }
 
-// Database connection parameters
-$host = 'localhost';
-$db = 'bookwise';
-$user = 'user_write';
-$pass = 'password';
+$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true);
+
+// Database connection parameters from the correct section
+$host = $config["database_user_write"]["hostname"];
+$db = $config["database_user_write"]["database"];
+$user = $config["database_user_write"]["username"];
+$pass = $config["database_user_write"]["password"];
+
 
 // Connect to the database
 $conn = new mysqli($host, $user, $pass, $db);

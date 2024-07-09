@@ -1,9 +1,11 @@
 <?php
-// Database connection parameters
-$host = 'localhost';
-$db = 'bookwise';
-$user = 'user_write';
-$pass = 'password';
+$config = parse_ini_file(__DIR__ . '/../scripts/config.ini', true);
+
+// Database connection parameters from the correct section
+$host = $config["database_user_write"]["hostname"];
+$db = $config["database_user_write"]["database"];
+$user = $config["database_user_write"]["username"];
+$pass = $config["database_user_write"]["password"];
 
 // Connect to the database
 $conn = new mysqli($host, $user, $pass, $db);
@@ -22,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = $_POST['phone'];
     $mobile = $_POST['mobile'];
     $address = $_POST['address'];
+    $postal_code = $_POST['postal_code'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
@@ -61,9 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if (!$message) {
+            // Fetch city from postal code using external API (CTT - Portuguese postal service)
+            $city = fetchCityFromPostalCode($postal_code); // Implement this function
+
             // Prepare and execute SQL query to insert user data
-            $stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, mobile, address, password, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $fullname, $email, $phone, $mobile, $address, $password, $profile_picture_with_extension);
+            $stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, mobile, address, postal_code, city, password, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssssss", $fullname, $email, $phone, $mobile, $address, $postal_code, $city, $password, $profile_picture_with_extension);
 
             if ($stmt->execute()) {
                 $message = "Registration successful!";
@@ -80,6 +86,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
+
+function fetchCityFromPostalCode($postalCode) {
+    $apiKey = '88d029d3e62c46f7b5e8271a2dc38322'; // Replace with your actual API key
+    $postalCodeParts = explode('-', $postalCode);
+    if (count($postalCodeParts) === 2) {
+        $cp4 = $postalCodeParts[0];
+        $cp3 = $postalCodeParts[1];
+        $apiUrl = "https://www.cttcodigopostal.pt/api/v1/{$apiKey}/{$cp4}-{$cp3}";
+
+        $response = file_get_contents($apiUrl);
+        $data = json_decode($response, true);
+
+        if (!empty($data) && isset($data[0]['localidade'])) {
+            return $data[0]['localidade'];
+        } else {
+            return 'Unknown'; // Default value if city not found
+        }
+    } else {
+        return 'Invalid Postal Code';
+    }
+}
 ?>
 
 <!DOCTYPE html>
