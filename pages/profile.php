@@ -1,6 +1,6 @@
 <?php
 
-include ('../scripts/session_handler.php'); // Include the session handler
+include('../scripts/session_handler.php'); // Include the session handler
 
 
 // Database connection parameters
@@ -84,7 +84,7 @@ if (!empty($profile_picture)) {
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="main-breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">User Profile</li>
                 </ol>
             </nav>

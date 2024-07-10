@@ -4,7 +4,7 @@ session_start();
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     // Redirect to the login page
-    header("Location: ../pages/login.html");
+    header("Location: ../pages/login.php");
     exit;
 }
 
@@ -34,10 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    if(!isset($title) || !isset($author) || !isset($price) || !isset($description) || !isset($cover_image) || !isset($genre)){
-        header("location: ../index.html");
-    }else{
-        
+    if (!isset($title) || !isset($author) || !isset($price) || !isset($description) || !isset($genre)) {
+        header("location: ../index.php");
+    } else {
+
         // Handle file upload
         if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] == 0) {
             $allowed = ['jpg', 'jpeg', 'png', 'gif'];
@@ -45,18 +45,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
             $file_size = $_FILES['cover_image']['size'];
             $file_tmp = $_FILES['cover_image']['tmp_name'];
-    
+
             if (in_array($file_ext, $allowed) && $file_size <= 31457280) { // 30MB limit
                 $new_filename = uniqid('', true) . "." . $file_ext;
                 $upload_dir = "../uploads/book_covers/";
-                
+
                 // Ensure the upload directory exists
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0777, true);
                 }
-    
+
                 $file_path = $upload_dir . $new_filename;
-    
+
                 if (move_uploaded_file($file_tmp, $file_path)) {
                     $cover_image = $new_filename;
                 } else {
@@ -68,18 +68,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit;
             }
         }
-    
+
         // Insert book data into the database
         $sql = "INSERT INTO books (title, author, price, description, cover_image, genre, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssssssi', $title, $author, $price, $description, $cover_image, $genre, $_SESSION['user_id']);
-    
+
         if ($stmt->execute()) {
             echo "Book registered successfully!";
+            echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"></script>';
+            echo '<script>';
+            echo 'const socket = io("http://localhost:3000/", {';
+            echo 'withCredentials: true,';
+            echo '});';
+            echo 'socket.emit("newMSG", "Book as been registered successfully");';
+            echo '</script>';
         } else {
             echo "Error registering book: " . $stmt->error;
         }
-    
+
         $stmt->close();
     }
 }

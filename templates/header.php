@@ -124,7 +124,7 @@ if (!isset($_SESSION['token']) || !isset($_SESSION['token_expiry']) || !isset($_
             </div>
             <!-- Register Book Button -->
             <div class="item_top item">
-                <a href="../pages/register_book.php" class="btn btn-primary">Register Book</a>
+                <a href="../Online_Book_Shop-master/pages/register_book.php" class="btn btn-primary">Register Book</a>
             </div>
         </div>
         <!-- Header Bottom -->
