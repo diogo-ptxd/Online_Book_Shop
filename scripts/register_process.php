@@ -21,15 +21,15 @@ $registrationSuccess = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname = $_POST['fullname'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $mobile = $_POST['mobile'];
+    $phone = $_POST['phone'] ?? '';
+    $mobile = $_POST['mobile'] ?? '';
     $address = $_POST['address'];
     $postal_code = $_POST['postal_code'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
     // Validate password
-    if (empty($fullname) || empty($email) || empty($address) || empty($password) || empty($confirm_password)) {
+    if (empty($fullname) || empty($email) || empty($address) || empty($password) || empty($confirm_password) || empty($postal_code)) {
         $message = "All fields except phone and mobile are required.";
         $messageType = "error";
     } elseif ($password !== $confirm_password) {
@@ -39,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         // Handle file upload
+        $profile_picture_with_extension = '';
         if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
             $file_name = $_FILES['profile_picture']['name'];
             $file_tmp = $_FILES['profile_picture']['tmp_name'];
@@ -64,12 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if (!$message) {
-            // Fetch city from postal code using external API (CTT - Portuguese postal service)
-            $city = fetchCityFromPostalCode($postal_code); // Implement this function
-
             // Prepare and execute SQL query to insert user data
-            $stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, mobile, address, postal_code, city, password, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssss", $fullname, $email, $phone, $mobile, $address, $postal_code, $city, $password, $profile_picture_with_extension);
+            $stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, mobile, address, postal_code, password, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $fullname, $email, $phone, $mobile, $address, $postal_code, $password, $profile_picture_with_extension);
 
             if ($stmt->execute()) {
                 $message = "Registration successful!";
@@ -86,27 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
-
-function fetchCityFromPostalCode($postalCode) {
-    $apiKey = '88d029d3e62c46f7b5e8271a2dc38322'; // Replace with your actual API key
-    $postalCodeParts = explode('-', $postalCode);
-    if (count($postalCodeParts) === 2) {
-        $cp4 = $postalCodeParts[0];
-        $cp3 = $postalCodeParts[1];
-        $apiUrl = "https://www.cttcodigopostal.pt/api/v1/{$apiKey}/{$cp4}-{$cp3}";
-
-        $response = file_get_contents($apiUrl);
-        $data = json_decode($response, true);
-
-        if (!empty($data) && isset($data[0]['localidade'])) {
-            return $data[0]['localidade'];
-        } else {
-            return 'Unknown'; // Default value if city not found
-        }
-    } else {
-        return 'Invalid Postal Code';
-    }
-}
 ?>
 
 <!DOCTYPE html>

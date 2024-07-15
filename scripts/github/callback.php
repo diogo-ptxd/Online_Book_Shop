@@ -12,7 +12,7 @@ $config = parse_ini_file(__DIR__ . '/../config.ini', true);
 $host = $config["database_user_write"]["hostname"];
 $db = $config["database_user_write"]["database"];
 $user = $config["database_user_write"]["username"];
-$pass = $config["database_user_write"]["password"];
+$pass = $config["database_user_write"]["password"]; 
 
 // Connect to the database
 $conn = new mysqli($host, $user, $pass, $db);

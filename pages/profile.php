@@ -1,6 +1,6 @@
 <?php
 
-include('../scripts/session_handler.php'); // Include the session handler
+session_start(); // Include the session handler
 
 
 // Database connection parameters
@@ -55,9 +55,14 @@ if ($result->num_rows > 0) {
 $stmt->close();
 $conn->close();
 
-// Determine profile image path
+// Determine profile image path and check if github profile pic was attributed
 if (!empty($profile_picture)) {
-    $profile_image_path = '../uploads/profile_pictures/' . $profile_picture;
+    $search_for = "github";
+    if (str_contains($profile_picture, $search_for) !== false && $search_for !== '') {
+        $profile_image_path = $profile_picture;
+    } else {
+        $profile_image_path = '../uploads/profile_pictures/' . $profile_picture;
+    }
 } else {
     // Default image if profile picture is not set
     $profile_image_path = 'https://bootdey.com/img/Content/avatar/avatar7.png';
@@ -74,6 +79,7 @@ if (!empty($profile_picture)) {
     <link rel="stylesheet" href="../assets/css/profile.css">
     <link rel="icon" type="image/x-icon" href="../assets/images/bookwise_logo.png">
     <script src='https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js'></script>
+
     <title>BookWise - Profile</title>
 </head>
 
@@ -112,7 +118,8 @@ if (!empty($profile_picture)) {
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                 <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline">
-                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                                        </path>
                                     </svg>Github</h6>
                                 <span class="text-secondary"><a href="https://github.com/diogo-ptxd" target="_blank">https://github.com/diogo-ptxd</a></span>
                             </li>
@@ -174,24 +181,83 @@ if (!empty($profile_picture)) {
                             </div>
                         </div>
                     </div>
+                    <!--  Book Status  -->
                     <div class="row gutters-sm">
                         <div class="col-sm-6 mb-3">
                             <div class="card h-100">
+
+                                <!-- $host = 'localhost';
+                                    $db = 'bookwise';
+                                    $user = 'book_read';
+                                    $pass = 'password';
+
+                                    // Connect to the database
+                                    $conn = new mysqli($host, $user, $pass, $db);
+                                    if ($conn->connect_error) {
+                                        die("Connection failed: " . $conn->connect_error);
+                                    }
+                                        -->
                                 <div class="card-body">
-                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                                    <!-- Placeholder content -->
+                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Status</i>Currently Selling</h6>
+                                    <div class="row">
+                                        <?php
+                                        $host = 'localhost';
+                                        $db = 'bookwise';
+                                        $user = 'book_read';
+                                        $pass = 'password';
+
+                                        // Connect to the database
+                                        $conn = new mysqli($host, $user, $pass, $db);
+                                        if ($conn->connect_error) {
+                                            die("Connection failed: " . $conn->connect_error);
+                                        }                                        // Ensure $user_id is set from session
+
+                                        // Query to fetch books associated with the current user
+                                        $sql = "SELECT * FROM books WHERE user_id = ?";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bind_param("i", $user_id);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                // Display each book in the specified format
+                                                echo '<div class="col-md-3 mb-3" style="flex: 100%; max-width: 100%;">'; // Ensure each card is within a column and add margin for spacing
+                                                echo '<div class="card h-100">';
+                                                echo '<img src="../uploads/book_covers/' . htmlspecialchars($row['cover_image']) . '" class="card-img-top" alt="' . htmlspecialchars($row['title']) . '" style="padding: 20px 20px 5px 20px; width: 100%;object-fit:scale-down; height: auto; max-height: 200px;">';
+                                                echo '<div class="card-body">';
+                                                echo '<h5 class="card-title">' . htmlspecialchars($row['title']) . '</h5>';
+                                                echo '<p class="card-text">' . htmlspecialchars($row['price']) . '€</p>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                            }
+                                        } else {
+                                            echo '<div class="col-md-12">'; // Display a message across the entire width if no books are found
+                                            echo '<p>No books currently listed for sale.</p>';
+                                            echo '</div>';
+                                        }
+
+                                        $stmt->close();
+                                        ?>
+                                    </div>
                                 </div>
+
+
+
+
                             </div>
                         </div>
                         <div class="col-sm-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Status</i>Sold Books</h6>
                                     <!-- Placeholder content -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Book Status End -->
                 </div>
             </div>
         </div>
